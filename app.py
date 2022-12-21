@@ -1,16 +1,12 @@
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, make_response, redirect
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, make_response
 import pdfkit
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import db_handler
 
-# from weasyprint import HTML
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-# db = SQLAlchemy(app)
 app.app_context().push()
 
 
@@ -29,8 +25,6 @@ def home():
         if car.rented:
             new_obj.rented = False
             al_customers = db_handler.get_row_by_column_list("Booking", ["car_obj", "returned"], [car.id, "0"])
-            print("@@@@", al_customers)
-            print("@@@@", type(al_customers))
             if type(al_customers) == list:
                 suffix_name = " Rented: "
                 for customer in al_customers:
@@ -41,8 +35,6 @@ def home():
             else:
                 hire_date = al_customers.hire_date.strftime("%Y-%m-%d")
                 return_date = al_customers.return_date.strftime("%Y-%m-%d")
-                print("hire_date", hire_date)
-                print("return_date", return_date)
                 new_obj.car_name += " Rented: " + "(" + hire_date + " - " + return_date + ") "
         to_return.append(new_obj)
     return render_template('cars.html', all_cars=to_return)
@@ -105,7 +97,6 @@ def submit_booking():
 def get_report():
     picker1 = str(request.form['date'])
     start = datetime.strptime(picker1, '%Y-%m-%d ')
-    end_date = start + timedelta(days=1)
     # all_bookings = db_handler.get_row_by_column_between("Booking", "hire_date", start, end_date)
     all_bookings = db_handler.get_row_by_column("Booking", "hire_date", start)
     if type(all_bookings) == list:
@@ -134,7 +125,7 @@ def invoice():
 @app.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
     booking = db_handler.delete_by_column_and_return("Booking", "id", id)
-    car = db_handler.update_single_value_by_column("Cars", "rented", 0, "id", booking.car_obj)
+    db_handler.update_single_value_by_column("Cars", "rented", 0, "id", booking.car_obj)
 
     all_bookings = db_handler.get_all_row_order_by_dict_by_desc("Booking", "hire_date")
     return render_template('customers.html', all_bookings=all_bookings)
@@ -196,7 +187,7 @@ def send_email():
         html_content='<strong>and easy to do anywhere, even with Python</strong>')
 
     sg = SendGridAPIClient("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")
-    response = sg.send(message)
+    sg.send(message)
 
 
 # function recive the booking modified data then update the booking table and redirect to home page
