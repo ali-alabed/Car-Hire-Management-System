@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Available Cars</title>
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='jquery.datetimepicker.min.css') }}">
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #b2e1fd;">
+        <a class="navbar-brand   mx-5" href="#">Car Hire Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav  mx-5">
+                <li class="nav-item active  mx-5">
+                    <a class="nav-link" href="{{ url_for('home') }}">Booking</a>
+                </li>
+                <li class="nav-item  mx-5">
+                    <a class="nav-link" href="{{ url_for('customers') }}">Customers</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <div class="container my-5"> </div>
+    <br>
+    <br>
+
+    <div class="container  my-5  col-5" >
+        <form role="form" action="{{ url_for('get_report') }}" method="post" enctype="multipart/form-data">
+
+
+            <div class="form-group">
+                <label for="picker1"><strong>Select a Day to Creat the Report for</strong></label>
+                <div class="col-sm-12 col-lg-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">
+                                Date
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" id="picker1" name="date" placeholder="{{ start_time }}" autocomplete="off" required/>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+
+        </form>
+
+
+    </div>
+    <div class="container  my-5  col-5" >
+        <form role="form" action="{{ url_for('search') }}" method="post" enctype="multipart/form-data">
+
+
+            <div class="form-group">
+                <label for="info"><strong>Search</strong></label>
+
+                <input type="text" class="form-control" id="info" name="info" placeholder="{{ start_time }}" autocomplete="off" required/>
+
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+
+        </form>
+
+
+    </div>
+
+    <br>
+    <br>
+
+    <div class="container  my-5  col-9" >
+         <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Req.</th>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Renting Date</th>
+                <th scope="col">Return Date</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+                <th scope="col"> </th>
+                <th scope="col"> </th>
+                <th scope="col"> </th>
+            </tr>
+            </thead>
+            <tbody id="table_body">
+
+
+            {% for book in all_bookings %}
+                <tr>
+                    <td>{{ book.id }}</td>
+                    <td>{{ book.customer_name }}</td>
+                    <td>{{ book.hire_date }}</td>
+                    <td>{{ book.return_date }}</td>
+                    <td>{{ book.email }}</td>
+                    <td>{{ book.phone }}</td>
+                    <td>
+                        <a class="btn btn-danger" onclick="delete2({{ book.id }})">Delete</a>
+                    </td>
+                    <td>
+                        <a   class="btn btn-success" onclick="update({{ book.id }})">Update</a>
+                    </td>
+                    <td>
+                        <a   class="btn btn-success" onclick="return_car({{ book.id }})">Return Car</a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='jquery.datetimepicker.full.min.js') }}"></script>
+    <script>
+        $("#picker1").datetimepicker({
+            timepicker: true,
+            datepicker: true,
+            format: "Y-m-d ",
+            step: 15,
+        });
+
+        function delete2(id) {
+            $.ajax({
+                url: '/delete/' + id,
+                type: 'POST',
+                success: function (result) {
+                    window.location.reload(true);
+                }
+            })
+        }
+        function return_car(id) {
+            $.ajax({
+                url: '/return_car/' + id,
+                type: 'POST',
+                success: function (result) {
+                    window.location.reload(true);
+                }
+            })
+        }
+        //function send post request to flask function "update" give it the id of the row to update then flask will return with a different page
+        function update(id) {
+            $.ajax({
+                url: '/update/' + id,
+                type: 'POST',
+                success: function (result) {
+                    window.location.href = '/update/' + id;
+                }
+            })
+        }
+    </script>
+
+    </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Available Cars</title>
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #b2e1fd;">
+        <a class="navbar-brand   mx-5" href="#">Car Hire Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav  mx-5">
+                <li class="nav-item active  mx-5">
+                    <a class="nav-link" href="{{ url_for('home') }}">Booking</a>
+                </li>
+                <li class="nav-item  mx-5">
+                    <a class="nav-link" href="{{ url_for('customers') }}">Customers</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <div class="container my-5">
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary mx-3" for="btnradio1">Small Cars </label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-primary  mx-3" for="btnradio2">Family Cars</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+            <label class="btn btn-outline-primary mx-3" for="btnradio3">Vans</label>
+        </div>
+    </div>
+
+    <div class="container  my-5" id="small_cars">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Care Model</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for car in all_cars %}
+                {% if (not car.rented) and car.car_type == 1 %}
+                    <tr>
+                        <td>{{ car.car_name }}</td>
+                        <td>{{ car.car_price }}</td>
+                        <td>
+                            <form role="form" action="{{ url_for('book_car') }}" method="post"
+                                  enctype="multipart/form-data">
+                                <div class="form-group d-inline">
+                                    <input type="hidden" name="car_id" id="car_id" value="{{ car.id }}">
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-success">Book</button>
+
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="container  my-5" id="family_cars">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Care Model</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for car in all_cars %}
+                {% if  (not car.rented) and car.car_type == 2 %}
+                    <tr>
+                        <td>{{ car.car_name }}</td>
+                        <td>{{ car.car_price }}</td>
+                        <td>
+                            <form role="form" action="{{ url_for('book_car') }}" method="post"
+                                  enctype="multipart/form-data">
+                                <div class="form-group d-inline">
+                                    <input type="hidden" name="car_id" id="car_id" value="{{ car.id }}">
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-success">Book</button>
+
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="container  my-5" id="vans_cars">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Care Model</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            {% for car in all_cars %}
+                {% if (not car.rented) and car.car_type == 3 %}
+                    <tr>
+                        <td>{{ car.car_name }}</td>
+                        <td>{{ car.car_price }}</td>
+                        <td>
+                            <form role="form" action="{{ url_for('book_car') }}" method="post"
+                                  enctype="multipart/form-data">
+                                <div class="form-group d-inline">
+                                    <input type="hidden" name="car_id" id="car_id" value="{{ car.id }}">
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-success">Book</button>
+
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <script>
+
+
+        var small_cars = document.getElementById("small_cars");
+        var family_cars = document.getElementById("family_cars");
+        var vans_cars = document.getElementById("vans_cars");
+        window.onload = function () {
+            small_cars.style.display = "block";
+            family_cars.style.display = "none";
+            vans_cars.style.display = "none";
+        }
+        var btnradio1 = document.getElementById("btnradio1");
+        var btnradio2 = document.getElementById("btnradio2");
+        var btnradio3 = document.getElementById("btnradio3");
+
+        btnradio1.addEventListener("click", function () {
+            small_cars.style.display = "block";
+            family_cars.style.display = "none";
+            vans_cars.style.display = "none";
+        });
+
+        btnradio2.addEventListener("click", function () {
+            small_cars.style.display = "none";
+            family_cars.style.display = "block";
+            vans_cars.style.display = "none";
+        });
+
+        btnradio3.addEventListener("click", function () {
+            small_cars.style.display = "none";
+            family_cars.style.display = "none";
+            vans_cars.style.display = "block";
+        });
+    </script>
+    </body>
+</html>
