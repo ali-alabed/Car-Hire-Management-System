@@ -183,8 +183,8 @@ def send_email():
     message = Mail(
         from_email='e.m.apollo@gmail.com',
         to_emails='ali.h.alabed@gmail.com',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        subject='Car Hire Management System',
+        html_content='<strong>Car Hire Management System using flask Python</strong>')
 
     sg = SendGridAPIClient("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")
     sg.send(message)

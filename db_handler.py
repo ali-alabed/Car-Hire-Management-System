@@ -116,8 +116,6 @@ def get_row_by_column_list(table_name, column, value):
         return return_as_class_object(table_name, result)
 
 
-
-
 # function returns a row using a column and a value
 def get_row_by_column(table_name, column, value):
     conn = mysql.connector.connect(user=user_name, password=password, host=host, database=db_name)
@@ -229,8 +227,6 @@ def insert(table_name, columns, values):
     conn.close()
 
 
-# start update the table rows
-
 # function that updates a row in the database
 def update(table_name, columns, values, id):
     conn = mysql.connector.connect(user=user_name, password=password, host=host, database=db_name)
@@ -267,9 +263,6 @@ def update_single_value_by_column(table_name, column, value, column2, value2):
     cursor.execute(sql)
     conn.commit()
     conn.close()
-
-
-# end update the table rows
 
 
 # function that deletes a row in the database
